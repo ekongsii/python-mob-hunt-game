@@ -1,5 +1,5 @@
 from player import Player
-from monster import Slime
+from monster import Mushroom
 from battle import BattleManager
 
 class Game:
@@ -8,8 +8,8 @@ class Game:
         if not player_name.strip():
             player_name = "플레이어"
         self.player = Player(player_name, hp=100, attack_power=20)
-        self.mob = Slime("초록 슬라임", hp=80, attack_power=10, defense=3)
-        self.mob.max_hp = 80 # 필수: BattleManager의 monster.max_hp 출력을 위함
+        self.mob = Mushroom("주황버섯", hp=70, attack_power=12, defense=2)
+        self.mob.max_hp = 70  # BattleManager의 monster.max_hp 출력용 속성
         self.battle_manager = BattleManager()
 
     def show_menu(self):
@@ -26,16 +26,16 @@ class Game:
         while True:
             choice = self.show_menu()
             if choice == "1":
-                # 플레이어가 몬스터를 공격 (BattleManager 활용)
+                # 플레이어가 몬스터를 공격
                 self.battle_manager.player_attack(self.player, self.mob)
                 
-                # 몬스터 체력 판별 (is_monster_dead 활용)
+                # 몬스터의 HP가 0 이하면 루프 종료
                 if self.battle_manager.is_monster_dead(self.mob):
                     break
                 
                 # 몬스터 반격
                 print("\n[몬스터의 반격!]")
-                self.mob.attack("몸통 박치기")
+                self.mob.jump()
             elif choice == "2":
                 self.player.info()
             elif choice == "3":
