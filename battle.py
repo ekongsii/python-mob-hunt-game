@@ -16,11 +16,13 @@ class BattleManager:
         :param player: 플레이어 객체
         :param monster: 몬스터 객체
         """
-        # 플레이어가 몬스터를 공격 (내부적으로 데미지 차감 및 처치 시 경험치 획득 처리 수행됨)
+        # 플레이어가 몬스터를 공격 (내부적으로 데미지 차감)
         player.attack(monster)
 
         # 공격 후 상태에 따른 메시지 출력
         if self.is_monster_dead(monster):
             print(f"🎉 시스템: {monster.name}을(를) 완벽히 처치하였습니다!")
         else:
-            print(f"👾 시스템: {monster.name}의 남은 HP는 {monster.hp}/{monster.max_hp}입니다.")
+            # 몬스터의 max_hp 속성이 없을 수도 있으므로 안전장치 추가
+            max_hp_str = f"/{monster.max_hp}" if hasattr(monster, 'max_hp') else ""
+            print(f"👾 시스템: {monster.name}의 남은 HP는 {monster.hp}{max_hp_str}입니다.")
