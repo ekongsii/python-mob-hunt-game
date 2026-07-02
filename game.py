@@ -1,15 +1,16 @@
 from player import Player
 from monster import Slime
-from battle import Battle
+from battle import BattleManager
 
 class Game:
     def __init__(self):
         player_name = input("플레이어 이름을 입력하세요: ")
         if not player_name.strip():
             player_name = "플레이어"
-        self.player = Player(player_name, hp=100, attack_power=20, defense=5)
+        self.player = Player(player_name, hp=100, attack_power=20)
         self.mob = Slime("초록 슬라임", hp=80, attack_power=10, defense=3)
-        self.battle_manager = Battle(self.player, self.mob)
+        self.mob.max_hp = 80 # 필수: BattleManager의 monster.max_hp 출력을 위함
+        self.battle_manager = BattleManager()
 
     def show_menu(self):
         print("\n=== 메뉴 ===")
@@ -25,22 +26,16 @@ class Game:
         while True:
             choice = self.show_menu()
             if choice == "1":
-                # 플레이어가 몬스터를 공격
-                self.player.attack(self.mob)
+                # 플레이어가 몬스터를 공격 (BattleManager 활용)
+                self.battle_manager.player_attack(self.player, self.mob)
                 
-                # 몬스터 체력이 0 이하가 되면 게임 종료
-                if self.mob.hp <= 0:
-                    print("\n★ 축하합니다! 몬스터를 처치하여 승리했습니다! ★")
+                # 몬스터 체력 판별 (is_monster_dead 활용)
+                if self.battle_manager.is_monster_dead(self.mob):
                     break
                 
                 # 몬스터 반격
                 print("\n[몬스터의 반격!]")
-                self.mob.attack(self.player)
-                
-                # 플레이어 사망 시 게임 종료
-                if self.player.hp <= 0:
-                    print("\n★ 플레이어가 쓰러졌습니다. 게임 오버! ★")
-                    break
+                self.mob.attack("몸통 박치기")
             elif choice == "2":
                 self.player.info()
             elif choice == "3":
